@@ -1,4 +1,32 @@
+const { Schema, model } = require("mongoose");
 const Joi = require("joi")
+
+const { handleMongooseError } = require("../helpers")
+
+const contactSchema = new Schema({
+
+    name: {
+        type: String,
+        required: [true, 'Set name for contact'],
+      },
+      email: {
+        type: String,
+      },
+      phone: {
+        type: String,
+      },
+      favorite: {
+        type: Boolean,
+        default: false,
+      },
+},
+{
+    versionKey: false,
+    timestamps: true,
+  }
+);
+
+contactSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
     name: Joi.string()
@@ -40,16 +68,25 @@ const addSchema = Joi.object({
       "string.min": `"phone" number should have a minimum length of {#limit}`,
       "string.max": `"phone" number should have a maximum length of {#limit}`,
     }),
-  })
+    favorite: Joi.boolean(),
+  });
+  const updateFavoriteSchema = Joi.object({
+    favorite: Joi.boolean()
+    .required()
+    .messages({
+        "any.required": `missing field favorite`,
+      }),
+  });
+  
+  const schemas = {
+    addSchema,
+    updateFavoriteSchema,
 
+  };
+
+const Contact = model("contact", contactSchema);
 
 module.exports = {
-    addSchema,
-}
-
-
-// const addSchema = Joi.object({
-//   name: Joi.string().required(),
-//   email: Joi.string().required(),
-//   phone: Joi.string().required(),
-// })
+    Contact,
+    schemas,
+};
