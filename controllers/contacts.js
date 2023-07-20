@@ -7,7 +7,7 @@ const { HttpError } = require("../helpers/");
 const { ctrlWrapper } = require("../helpers")
 
 
-const getAll = async (req, res) => {
+const listContacts = async (req, res) => {
 
   const result = await Contact.find();
   res.json(result);
@@ -62,7 +62,7 @@ const updateFavorite = async (req, res) => {
 
 
   module.exports = {
-    getAll:  ctrlWrapper(getAll),
+    listContacts: ctrlWrapper(listContacts),
     getById: ctrlWrapper(getById),
     addContact: ctrlWrapper(addContact),
     deleteById: ctrlWrapper(deleteById),
